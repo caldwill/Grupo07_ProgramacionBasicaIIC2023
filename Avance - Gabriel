@@ -1,0 +1,26 @@
+import random
+
+figuras = ["@", "#", "+", "7"]
+premios = {"@": 1, "#": 2, "+": 3, "7": "acumulado"}
+
+dinero = 10  # Dinero inicial del jugador
+
+while True:
+    input("Presiona Enter para jalar la palanca...")
+    figuras_obtenidas = [random.choice(figuras) for _ in range(3)]
+    print("Figuras obtenidas:", figuras_obtenidas)
+    if all(figura == figuras_obtenidas[0] for figura in figuras_obtenidas):
+        # El jugador obtiene tres figuras iguales
+        premio = premios[figuras_obtenidas[0]]
+        if premio == "acumulado":
+            print("¡Felicidades, ganaste el acumulado!", dinero)
+        else:
+            dinero += premio
+            print("¡Felicidades, ganaste", premio, "dólares! Tu nuevo saldo es de", dinero, "dólares.")
+    else:
+        # El jugador pierde
+        dinero -= 1
+        print("Lo siento, sigue intentando. Tu saldo actual es de", dinero, "dólares.")
+    if dinero <= 0:
+        print("Te quedaste sin dinero. ¡Gracias por jugar!")
+        break
