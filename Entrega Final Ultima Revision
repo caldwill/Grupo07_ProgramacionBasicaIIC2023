@@ -1,0 +1,1156 @@
+[Ayer 23:59] CALDERON GARCIA WILLY GABRIEL
+
+#programa para la creacion del casino, mostrar los diferentes menus y posibilidades que el usuario va a tener una vez que ingresa al casino como jugar tragamonedas,
+
+# blackjack/21, asi como tener un perfil unico y opciones avanazadas
+
+#Autores: Willy Calderon Garcia - Gabriel Alejandro Porras Rodriguez
+
+#Fecha: 8/15/2023
+
+ 
+
+ 
+
+import getpass
+
+import random
+
+import time
+
+import shutil
+
+import os
+
+ 
+
+# Variables y constantes
+
+ 
+
+numeroDeusuarios = 100
+
+usuarios_Registrados = {}
+
+saldo_Global = 1000  # Saldo minimo en dólares para nuevos usuarios
+
+#saldo_Acumulado = (saldo_minimo + )  # Saldo minimo en dólares para nuevos usuarios
+
+ 
+
+# Función para el registro de un nuevo usuario
+
+def registro_nuevo_usuario():       
+
+       intentosMaximos = 3
+
+       intentos = 0
+
+       while intentos < intentosMaximos:
+
+              userIdname = input('Ingrese su nombre de usuario (puede ser alfanumerico): ')
+
+              if len(userIdname) < 5:
+
+                    print('El nombre de usuario debe ser minimo de 5 digitos, intente con otro.')
+
+              elif userIdname in usuarios_Registrados:
+
+                     print('El nombre de usuario ya esta registrado, intente con otro.')
+
+                     continue
+
+              else:
+
+                     break              
+
+                     intentos += 1
+
+                     if intentos == intentosMaximos:
+
+                            print('Se excedió el máximo de intentos para ingresar.\n')
+
+                     return
+
+              userNombre = input('Ingrese su nombre: ')
+
+
+       while True:
+
+              password = getpass.getpass('Ingrese su contraseña: ')
+
+              nombre = input('Ingrese su nombre: ')
+
+              pin = getpass.getpass('Ingrese su contraseña: ')
+
+              if len(pin) > 6:
+
+                     print('La contraseña no debe ser mayor a 6 digitos, intente con otro.')
+
+                     continue
+
+              confirm_Pin = getpass.getpass('Confirme su contraseña: ')
+
+              if pin != confirm_Pin:
+
+                     print('Las contraseñas son diferentes. Intente nuevamente.')
+
+              usuarios_Registrados[userIdname] = {"password": password, "nombre": nombre, "pin": pin}
+
+              print("Usuario creado exitosamente.\n")
+
+              break
+
+       else:
+
+        print('Se excedió el máximo de intentos para el registro.')
+
+
+#Paso para llamar las funciones de crear estructura, salvar informacion de usuarios
+
+       crear_estructura_archivos()
+
+       salvarUsuarionPassword (userIdname, pin)
+
+       verificar_credenciales(userIdname, pin)
+
+
+# Función para el ingreso de usuario
+
+def verificar_credenciales(userIdname, pin):
+
+       if userIdname in usuarios_Registrados and usuarios_Registrados[userIdname] == pin:
+
+              return True
+
+       else:
+
+              return False
+
+       userIdname = input("Ingrese su nombre de usuario: ")
+
+       pin = getpass.getpass("Ingrese su contraseña: ")
+
+ 
+
+def salvarUsuarionPassword (userIdname, pin):
+
+      with open(os.path.join("casino", "usuarios_pines.txt"), "w") as f:
+
+        f.write(f"{userIdname}:{pin}\n")
+
+
+ 
+
+#-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+# Función para el módulo DreamWorld Casino
+
+def dreamworld_casino():
+
+    global usuarios_registrados
+
+    intentosMaximos = 3
+
+    intentos = 0
+
+    while intentos < intentosMaximos:
+
+        if not usuarios_Registrados:
+
+            print("No hay usuarios registrados. Regístrese para acceder al casino.")
+
+            break
+
+        # Autenticación de usuarios
+
+        id_usuario = input("Ingrese su nombre de usuario: ")
+
+        if id_usuario not in usuarios_Registrados:
+
+            print("Usuario no encontrado. Intente nuevamente.")
+
+            return
+
+        pin = getpass.getpass("Ingrese su PIN: ")
+
+        if pin != usuarios_Registrados[id_usuario]["pin"]:
+
+            print("PIN incorrecto. Intente nuevamente.")
+
+            return  
+
+        print("Bienvenido, {usuarios_Registrados[id_usuario]['nombre']}.")
+
+        MenuJuegosenlinea ()
+
+
+
+ 
+
+def MenuJuegosenlinea ():
+
+       while True:
+
+              print("1. Tragamonedas")
+
+              print("2. Blackjack/21")
+
+              print("3. Regresar al menú principal")
+
+              opcion = input("Seleccione una opción: ")
+
+              if opcion == "1":
+
+                           jugar_tragamonedas()
+
+              elif opcion == "2":
+
+                            jugar_blackjack()
+
+              elif opcion == "3":
+
+                   print("Regresando al menú principal.")
+
+                   break
+
+              else:
+
+                   print("Opción inválida. Intente nuevamente.")
+
+
+
+      # except IOError:
+
+       # print("El archivo no existe")
+
+ 
+
+def retirar_dinero(saldo_actual):
+
+    print("Saldo actual de la cuenta:", saldo_actual)
+
+    monto_solicitado = float(input("Ingrese el monto que desea retirar: "))
+
+ 
+
+    if monto_solicitado > saldo_actual:
+
+        print("Monto solicitado mayor al saldo actual. Transacción no realizada.")
+
+        return saldo_actual
+
+ 
+
+    intentos = 1
+
+    while intentos <= 3:
+
+        if intentos > 1:
+
+            print("Monto inválido. Intente nuevamente.")
+
+        monto_solicitado = float(input("Ingrese el monto que desea retirar: "))
+
+        if monto_solicitado <= saldo_actual:
+
+            saldo_actual -= monto_solicitado
+
+            print("Se retiró el dinero solicitado.")
+
+            print("Saldo actual de la cuenta:", saldo_actual)
+
+            return saldo_actual
+
+        intentos += 1
+
+ 
+
+    print("Más de tres intentos inválidos. Transacción no realizada.")
+
+    return saldo_actual
+
+ 
+
+ 
+
+ 
+
+def depositar_dinero(saldo_actual, tasa_conversion):
+
+    divisas = {'colones': 536, 'bitcoin': 2612}
+
+ 
+
+    print("Divisas soportadas:")
+
+    print("1. Colones")
+
+    print("2. Dólares")
+
+    print("3. Bitcoin")
+
+    divisa_seleccionada = input("¿En qué moneda desea depositar el dinero? ")
+
+ 
+
+    if divisa_seleccionada not in divisas.keys():
+
+        print("Divisa no soportada. Transacción no realizada.")
+
+        return saldo_actual
+
+ 
+
+    monto_deposito = float(input("Ingrese el monto que desea depositar: "))
+
+ 
+
+    if monto_deposito <= 0:
+
+        print("Monto inválido. Transacción no realizada.")
+
+        return saldo_actual
+
+ 
+
+    if divisa_seleccionada == 'colones':
+
+        monto_deposito = monto_deposito / divisas['colones']
+
+    elif divisa_seleccionada == 'bitcoin':
+
+        monto_deposito = monto_deposito * divisas['bitcoin']
+
+ 
+
+    monto_deposito = round(monto_deposito, 2)
+
+ 
+
+    saldo_actual += monto_deposito
+
+    print("Transacción realizada de forma correcta.")
+
+    print("Saldo actual de la cuenta:", saldo_actual)
+
+    return saldo_actual
+
+ 
+
+ 
+
+ 
+
+def ver_saldo_actual(saldo_actual):
+
+    print("Saldo actual de la cuenta:", saldo_actual)
+
+ 
+
+ 
+
+def menu_principal():
+
+       saldo_actual = 1000
+
+       while True:
+
+              print("Seleccione una opción:")
+
+              print("1. Retirar dinero")
+
+              print("2. Depositar dinero")
+
+              print("3. Ver saldo actual")
+
+              print("4. Juegos en linea")
+
+              print("5. Salir")
+
+ 
+
+              opcion = int(input("Ingrese el número correspondiente a la opción seleccionada: "))
+
+ 
+
+              if opcion == 1:
+
+                   saldo_actual = retirar_dinero(saldo_actual)
+
+              elif opcion == 2:
+
+                   saldo_actual = depositar_dinero(saldo_actual, 2612)  # Tasa de conversión de bitcoin a dólares
+
+              elif opcion == 3:
+
+                   ver_saldo_actual(saldo_actual)
+
+              elif opcion == 4:
+
+                     MenuJuegosenlinea ()
+
+              else:
+
+                     opcion == 5
+
+              print("Saliendo del sistema...")
+
+              break
+
+       else:
+
+              print("Opción inválida. Intente nuevamente.")
+
+#menu_principal()
+
+ 
+
+# Funciones para los juegos en línea
+
+# Implementar la funcionalidad para el juego de tragamonedas
+
+def jugar_tragamonedas():
+
+    print("Jugando Tragamonedas...")
+
+ 
+
+# Figuras y premios
+
+figuras = ['@', '#', '+', '7']
+
+premios = {'@': 0, '#': 2, '+': 3, '7': 'acumulado'}
+
+ 
+
+# Apuesta mínima y saldo inicial
+
+apuesta_Minima = 10
+
+saldo = saldo_Global
+
+ 
+
+# Instrucciones del juego
+
+def mostrar_instrucciones():
+
+        print("Instrucciones del juego Tragamonedas:")
+
+        print("El juego consiste en jalar una palanca y esperar a que salgan tres figuras.")
+
+        print("Las figuras disponibles son: @, #, + y 7.")
+
+        print("La escala de premios es la siguiente:")
+
+        print("- Tres @ iguales: el jugador recupera su dinero.")
+
+        print("- Tres # iguales: el jugador obtiene el doble del dinero invertido.")
+
+        print("- Tres + iguales: el jugador obtiene el triple del dinero invertido.")
+
+        print("- Tres 7 iguales: el jugador obtiene el acumulado.")
+
+        print("El jugador debe invertir {} créditos por ronda de juego.".format(apuesta_Minima))
+
+        print("El saldo inicial es de {} créditos.".format(saldo))
+
+ 
+
+    # Jugar
+
+def jugar_ronda():
+
+        global saldo
+
+    # Verificar si el jugador tiene suficiente saldo para jugar
+
+        if saldo < apuesta_Minima:
+
+            print("No tiene suficiente saldo para jugar.")
+
+            return False
+
+    # Preguntar si desea jugar
+
+        input("Presione Enter para jalar la palanca e iniciar el juego.")
+
+    # Jalar la palanca y obtener las figuras aleatorias
+
+        print("Este es el resultado:")
+
+        figuras_obtenidas = [random.choice(figuras) for _ in range(3)]
+
+    # Mostrar las figuras en pantalla  
+
+        for figura in figuras_obtenidas:
+
+            print(figuras_obtenidas[:figuras_obtenidas.index(figura)+1])
+
+            #time.sleep(1.5) #Tiempo 1.5 s
+
+    # Verificar si el jugador ganó
+
+        if all(figura == figuras_obtenidas[0] for figura in figuras_obtenidas):
+
+            premio = premios[figuras_obtenidas[0]]
+
+            if premio == 'acumulado':
+
+                print("¡Felicidades! Ganó el acumulado.")
+
+                saldo += 1000  # Depositamos 1000 en la cuenta del jugador
+
+            elif premio == 0:
+
+                print("Tres {} iguales. Recupera su dinero.".format(figuras_obtenidas[0]))
+
+                saldo += apuesta_minima  # Devolvemos la apuesta al jugador
+
+            else:
+
+                print("Tres {} iguales. Gana {} créditos.".format(figuras_obtenidas[0], premio * apuesta_minima))
+
+                saldo += premio * apuesta_minima
+
+    # Si el jugador no ganó, restar la apuesta de su saldo
+
+        else:
+
+            print("Usted no ganó.")
+
+            saldo -= apuesta_Minima
+
+    # Mostrar el saldo actual
+
+        print("Su saldo actual es de {} créditos.".format(saldo))
+
+        return True
+
+ 
+
+# Función principal del juego
+
+def jugar_tragamonedas():
+
+        mostrar_instrucciones()
+
+ 
+
+    # Jugar rondas de juego hasta que el jugador decida salir
+
+        while True:
+
+            if not jugar_ronda():
+
+                break
+
+ 
+
+    # Verificar si el jugador desea jugar nuevamente
+
+            respuesta = input("¿Desea jugar nuevamente? (s/n): ")
+
+            if respuesta != 's':
+
+    #if respuesta.lower() != 's':
+
+                break
+
+ 
+
+# Ejecutar el juego
+
+#jugar_tragamonedas()
+
+apuesta_Minima = 10    
+
+def jugar_blackjack():
+
+    # Implementar la funcionalidad para el juego de Blackjack
+
+    def mostrar_instrucciones():
+
+        print("Instrucciones del juego BlacJack/21:")
+
+        print("El juego consiste en que el usuario recibira una cantidad de cartas para obtener la suma de 21.")
+
+        print("Se dispondra de una baraja de cartas (52 cartas).")
+
+        print("Ganara quien tenga un numero mas cercano a 21")
+
+        print("Se repartiran dos cartas al usuario.")
+
+        print("El mismo decidira si solicita una carta mas o termina el juego y asi sucesivamente de ser necesario.")
+
+        print("Cuando el usuario decide terminar el juego se revela la puntuacion de ambos, ganando el que este mas cercano o igual a 21.")
+
+        print("El saldo inicial es de {} créditos.".format(saldo_Global))
+
+    print("Jugando Blackjack...")
+
+    from random import sample
+
+ 
+
+#jugador1 = username ()
+
+    def juego(jugador1, lCasa, lista):
+
+        print(jugador1)
+
+        if(len(jugador1)==0 and len(lCasa)==0):
+
+            repartirIni(jugador1, lCasa, lista)
+
+            return "primera"
+
+        else:
+
+            if(contador(jugador1) <= 21):
+
+                if(input("Desea continuar JUGADOR? (Y/N)").upper() != "N"):
+
+                    repartir(jugador1,lCasa,lista,0)
+
+                else:
+
+                    print ("JUGADOR SU PUNTAJE ES " ,comprobacion(jugador1,contador(jugador1)))
+
+                    repartir(jugador1,lCasa,lista,1)
+
+            else:
+
+                return print("Perdio el JUGADOR , tiene: " + str(comprobacion(jugador1,contador(jugador1))))
+
+ 
+
+    def juego1(jugador1, lCasa, lista):
+
+        if(comprobacion(lCasa,contador(lCasa)) <= 21):
+
+            print ("CASA SU PUNTAJE ES " ,comprobacion(lCasa,contador(lCasa)))
+
+            if(comprobacion(lCasa,contador(lCasa)) < comprobacion(jugador1,contador(jugador1))):
+
+                repartir(jugador1,lCasa,lista,1)
+
+            elif(comprobacion(lCasa,contador(lCasa))) >= comprobacion(jugador1,contador(jugador1)):
+
+                print("La casa gano: " + str(comprobacion(lCasa,contador(lCasa))) + " a " + str(comprobacion(jugador1,contador(jugador1))))
+
+                return "final"
+
+            elif(comprobacion(jugador1,contador(jugador1)) >= comprobacion(lCasa,contador(lCasa))):
+
+                print("El jugador gano: " + str(comprobacion(jugador1,contador(jugador1))) + " a " + str(comprobacion(lCasa,contador(lCasa))))
+
+                return "final"
+
+        else:
+
+            return print("Perdio la CASA  tiene: " + str(comprobacion(lCasa,contador(lCasa))))
+
+ 
+
+ 
+
+    def creadorbaraja():
+
+        return sample([(x,y)for x in ['A',2,3,4,5,6,7,8,9,10,'J','Q','K']for y in ['DIAMANTES','TREBOLES','PICAS','CORAZONES']], 52)
+
+ 
+
+    def valor(carta):
+
+        if carta[0] == 'J' or  carta[0] == 'K' or  carta[0] == 'Q':
+
+            return 10
+
+        elif carta[0] == 'A':
+
+            return 1
+
+ 
+
+        else:
+
+            return carta[0]
+
+ 
+
+    def contador(lista):
+
+        if(len(lista)==0):
+
+            return 0
+
+        else:
+
+            return contador(lista[1:])+valor(lista[0])
+
+ 
+
+    def comprobacion(lista,numero):
+
+        if lista == []:
+
+            return numero
+
+        elif lista[0] in [('A', 'CORAZONES'),('A', 'DIAMANTES'),('A', 'PICAS'),('A', 'TREBOLES')] and numero+10<22:
+
+            return comprobacion(lista[1:],numero+10)
+
+        else:
+
+            return comprobacion(lista[1:],numero)
+
+ 
+
+    def repartirIni(jugador1, lCasa, lista):
+
+        jugador1.append(lista[0])
+
+        jugador1.append(lista[20])
+
+        lCasa.append(lista[1])
+
+        print("Cartas jugador: " + str(jugador1))
+
+        print("Cartas casa: " + str(lCasa))
+
+        juego(jugador1, lCasa, lista[4:])
+
+ 
+
+    def repartir(jugador1, lCasa, lista,turno):
+
+        if turno==0:
+
+            jugador1.append(lista[0])
+
+            print("Cartas jugador: " + str(jugador1))
+
+            print("Cartas casa: " + str(lCasa))
+
+            juego(jugador1, lCasa, lista[2:])
+
+        if turno==1:
+
+            lCasa.append(lista[1])
+
+            print("Cartas jugador: " + str(jugador1))
+
+            print("Cartas casa: " + str(lCasa))
+
+            juego1(jugador1, lCasa, lista[2:])
+
+    while True:
+
+      juego([],[],creadorbaraja())
+
+      if(input("Desea continuar JUGANDO BLACK JACK? (Y/N)").upper() != "Y"):
+
+        break    
+
+ 
+
+ 
+
+# Función para el módulo de Configuración Avanzada
+
+# Función para autenticar como usuario avanzado
+
+def autenticar_usuario_avanzado(pin_especial):
+
+    pin = getpass.getpass("Ingrese el PIN especial: ")
+
+    return pin == pin_especial
+
+ 
+
+# Función para eliminar un usuario y sus registros
+
+def eliminar_usuario():
+
+    id_usuario = input("Ingrese el ID del usuario que desea eliminar: ")
+
+    if os.path.exists(id_usuario):
+
+        try:
+
+            # Eliminar el directorio del usuario y su archivo de registro
+
+            shutil.rmtree(id_usuario)
+
+            print(f"Usuario '{id_usuario}' eliminado exitosamente.")
+
+        except Exception as e:
+
+            print("Error al eliminar el usuario:", e)
+
+    else:
+
+        print(f"El usuario '{id_usuario}' no existe.")
+
+ 
+
+# Función para modificar valores del sistema
+
+def modificar_valores_sistema():
+
+    opciones = [
+
+        "Tipo de cambio: Compra de dólares usando colones",
+
+        "Tipo de cambio: Compra de dólares usando bitcoins",
+
+        "Valor acumulado Tragamonedas",
+
+        "Apuesta mínima Tragamonedas",
+
+        "Apuesta mínima Blackjack",
+
+        "Inversión mínima para registrarse",
+
+    ]
+
+ 
+
+    print("¿Qué desea modificar?")
+
+    for i, opcion in enumerate(opciones, start=1):
+
+        print(f"{i}. {opcion}")
+
+    print(f"{len(opciones) + 1}. Salir")
+
+ 
+
+ 
+
+    seleccion = int(input("Seleccione una opción: "))
+
+    if 1 <= seleccion <= len(opciones):
+
+        nuevo_valor = input("Ingrese el nuevo valor: ")
+
+        with open("configuracion.txt", "r") as f:
+
+            configuracion = f.readlines()
+
+        configuracion[seleccion - 1] = f"{opciones[seleccion - 1]}: {nuevo_valor}\n"
+
+        with open("configuracion.txt", "w") as f:
+
+            f.writelines(configuracion)
+
+        print("Valor actualizado exitosamente.")
+
+    elif seleccion == len(opciones) + 1:
+
+        return
+
+    else:
+
+        print("Opción inválida.")
+
+# NO pudimos terminar esta parte del codigo para ejecutar las acciones del menu modificar valores
+
+#colonesCambio = 535.25
+
+#bitcoinCambio = 26755 
+
+# while True 
+
+#        if seleccion = 1:#Tipo de cambio: Compra de dólares usando colones
+
+#            nuevoMontoDolares1 = (nuevo_valor/colonesCambio)
+
+#            saldo_Global = (saldo_Global+nuevoMontoDolares)
+
+#            salvarSaldoGlobal (saldo_Global)
+
+#            print ("Su saldo actual es de: ",saldo_Global," dolares\n") 
+
+#        if seleccion = 2:#"Tipo de cambio: Compra de dólares usando bitcoins",
+
+#            nuevoMontoDolares2 = (nuevo_valor*bitcoinsCambio)
+
+#            saldo_Global = (saldo_Global+nuevoMontoDolares2)
+
+#            salvarSaldoGlobal (saldo_Global)
+
+#            print ("Su saldo actual es de: ",saldo_Global," dolares\n") 
+
+#        if seleccion = 3:#"Valor acumulado Tragamonedas",
+
+#            valorAcumuladoTragamonedas = 1000
+
+#            print ("El acumulado en el juego Tragamonedas es de: ", valorAcumuladoTragamonedas," dolares.\n")
+
+#        if seleccion = 4:#"Apuesta mínima Tragamonedas",
+
+#            montoMinimo1 = 20
+
+#            minimaTragamonedas = int(input("Ingrese su apuesta minima: \n")
+
+#                if minimaTragamonedas < montoMinimo1:
+
+#                    print("Apuesta minima invalida, intente de nuevo\n"
+
+#                          return
+
+#                else:
+
+#                    print("Apuesta minima actualizada con exito")
+
+#            #apuesta_MinimaTM == minimaTragamonedas
+
+#            
+
+#        if seleccion = 5:#"Apuesta mínima Blackjack",
+
+#            montoMinimo2 = 100
+
+#            minimaTragamonedas = int(input("Ingrese su apuesta minima: \n")
+
+#                if minimaTragamonedas < montoMinimo2:
+
+#                    print("Apuesta minima invalida, intente de nuevo\n"
+
+#                          return
+
+#               else:
+
+#                    print("Apuesta minima actualizada con exito")
+
+#            #apuesta_MinimaBJ = minimaBlackJack
+
+#        if seleccion = 6:#"Inversión mínima para registrarse",
+
+#            montoMinimo3 = 1000
+
+#            minimaInversion = int(input("Ingrese su apuesta minima: \n")
+
+#                if minimaInversion < montoMinimo3:
+
+#                    print("Inversion minima invalida, intente de nuevo\n"
+
+#                          return
+
+#                else:
+
+#                    print("Inversion minima actualizada con exito")
+
+#        else
+
+#            Break
+
+
+ 
+
+# Configuración
+
+pin_especial = "PIN12345"  # Definir el PIN especial
+
+ 
+
+ 
+
+# Menú principal Configuracion avanzada
+
+def configuracion_avanzada():
+
+       while True:
+
+           print("Bienvenido al Menú Avanzado")
+
+           if autenticar_usuario_avanzado(pin_especial):
+
+               print("Autenticación exitosa. Seleccione una opción:")
+
+               print("1. Eliminar usuario")
+
+               print("2. Modificar valores del sistema")
+
+               print("3. Salir")
+
+               opcion = int(input("Seleccione una opción: "))
+
+ 
+
+ 
+
+               if opcion == 1:
+
+                   eliminar_usuario()
+
+               elif opcion == 2:
+
+                   modificar_valores_sistema()
+
+               elif opcion == 3:
+
+                   print("Saliendo del Menú Avanzado.")
+
+                   break
+
+               else:
+
+                   print("Opción inválida.")
+
+           else:
+
+               print("Autenticación fallida. Volviendo al menú principal.")
+
+ 
+
+
+
+#-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+ 
+
+# Seccion para las funciones de las Bibliotecas
+
+ 
+
+# Crear la estructura de carpetas y archivos iniciales
+
+def crear_estructura_archivos():
+
+    # Crear carpeta principal
+
+    if not os.path.exists("casino"):
+
+        os.mkdir("casino")
+
+ 
+
+    # Crear carpetas de usuarios y código fuente
+
+    carpetas = ["usuario1", "usuario2", "codigo_fuente"]
+
+    for carpeta in carpetas:
+
+        carpeta_path = os.path.join("casino", carpeta)
+
+        if not os.path.exists(carpeta_path):
+
+            os.mkdir(carpeta_path)
+
+ 
+
+    # Crear archivo de configuración avanzada
+
+    config_avanzada = [
+
+        "Tipo de cambio: Compra de dólares usando colones",
+
+        "Tipo de cambio: Compra de dólares usando bitcoins",
+
+        "Valor acumulado Tragamonedas",
+
+        "Apuesta mínima Tragamonedas",
+
+        "Apuesta mínima Blackjack",
+
+        "Inversión mínima para registrarse"
+
+    ]
+
+    with open(os.path.join("casino", "configuracion_avanzada.txt"), "w") as f:
+
+        for linea in config_avanzada:
+
+            f.write(linea + "\n")
+
+ 
+
+    # Crear archivo de usuarios y pines
+
+    with open(os.path.join("casino", "usuarios_pines.txt"), "w") as f:
+
+        f.write("PIN12345\n")  # PIN usado en Configuración Avanzada
+
+        # Agregar más usuarios y pines según sea necesario
+
+ 
+
+    #print("Estructura de archivos creada exitosamente.")
+
+ 
+
+def mostrarInformacionIngresodeUsuario  ():
+
+    try:
+
+        file = open("usuarios_pines.txt","r")
+
+        informacion = file.read()
+
+        file.close()
+
+        print(informacion)
+
+    except IOError:
+
+        print("El archivo no existe")
+
+ 
+
+# Crear la estructura de archivos
+
+crear_estructura_archivos()
+
+ 
+
+ 
+
+#-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+ 
+
+#Codigo del programa principal
+
+if __name__ == "__main__":
+
+    while True:
+
+        print("Bienvenid@ al casino en linea DreamWorld Casino")
+
+        print("Seleccione una opción:")
+
+        print("1. Registro de usuario nuevo")
+
+        print("2. DreamWorld Casino")
+
+        print("3. Configuracion Avazada")
+
+        print("4. Salir")
+
+        opcion = int(input())
+
+        if opcion == 1:
+
+            registro_nuevo_usuario()
+
+        elif opcion == 2:
+
+            dreamworld_casino()
+
+        elif opcion == 3:
+
+            configuracion_avanzada()
+
+        elif opcion == 4:
+
+            print("Gracias por usar nuestros servicios.")
+
+            break
+
+        else:
+
+            print("Opcion invalida, intentelo nuevamente!")
